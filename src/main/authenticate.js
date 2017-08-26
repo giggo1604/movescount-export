@@ -1,4 +1,4 @@
-const { session, BrowserWindow } = require('electron');
+import { session, BrowserWindow } from 'electron'; // eslint-disable-line
 
 const baseURL = 'http://www.movescount.com';
 const overviewURL = `${baseURL}/overview`;
@@ -35,4 +35,4 @@ function authenticate() {
     });
 }
 
-module.exports = authenticate;
+export default authenticate;

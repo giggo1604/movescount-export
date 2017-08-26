@@ -12,10 +12,16 @@ With this data available it starts to exports your moves to the local file syste
 git clone https://github.com/giggo1604/movescount-export
 # Go into the repository
 cd movescount-export
-# Install dependencies
+# install dependencies
 npm install
-# Run the app
-npm start
+# serve with hot reload at localhost:9080
+npm run dev
+# build electron application for production
+npm run build
+# run unit & end-to-end tests
+npm test
+# lint all JS/Vue component files in `src/`
+npm run lint
 ```
 
 ## License

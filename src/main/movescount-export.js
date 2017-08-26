@@ -1,6 +1,6 @@
-const fs = require('fs');
-const fetch = require('node-fetch');
-const moment = require('moment');
+import fs from 'fs';
+import fetch from 'node-fetch';
+import moment from 'moment';
 
 const exportBaseURL = 'http://www.movescount.com/move/export?';
 const folder = './downloads/';
@@ -38,4 +38,4 @@ async function movescountExport([config, activityRecordsData, cookies]) {
     moves.map(m => m.MoveId).forEach(id => saveMove(id, options));
 }
 
-module.exports = movescountExport;
+export default movescountExport;
