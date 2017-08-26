@@ -5,37 +5,37 @@ const moment = require('moment');
 const exportBaseURL = 'http://www.movescount.com/move/export?';
 const folder = './downloads/';
 
-async function movescountExport([config, activityRecordsData, cookies]) {
-    const {UserId} = config;
-    const {token, activityRecordsBaseUrl: baseUrl} = activityRecordsData;
+function saveMove(id, options) {
+    const exportURL = `${exportBaseURL}id=${id}&format=tcx`;
+    fetch(exportURL, options).then((res) => {
+        res.body.pipe(fs.createWriteStream(`${folder}move-${id}.tcx`));
+    });
+}
 
-    const startDateQuery = 'startDateString=' + moment.utc().subtract(100, 'days').startOf('day').toISOString();;
-    const endDateQuery= 'endDateString=' + moment.utc().endOf('day').toISOString();
-    const userIdQuery = `userId=${UserId}`
+async function movescountExport([config, activityRecordsData, cookies]) {
+    const { UserId } = config;
+    const { token, activityRecordsBaseUrl: baseUrl } = activityRecordsData;
+
+    const startDateQuery = `startDateString=${moment.utc().subtract(100, 'days').startOf('day').toISOString()}`;
+    const endDateQuery = `endDateString=${moment.utc().endOf('day').toISOString()}`;
+    const userIdQuery = `userId=${UserId}`;
 
     const url = `${baseUrl}/moves/getmoves/?${startDateQuery}&${endDateQuery}&${userIdQuery}`;
 
     const result = await fetch(url, { headers: { Authorization: token } });
-    const {Moves: moves} = await result.json();
+    const { Moves: moves } = await result.json();
 
-    cookies = cookies
+    const cookiesString = cookies
         .map(cookie => `${cookie.name}=${cookie.value}`)
         .join('; ');
 
     const options = {
         headers: {
-            Cookie: cookies
-        }
+            Cookie: cookiesString,
+        },
     };
 
     moves.map(m => m.MoveId).forEach(id => saveMove(id, options));
-}
-
-function saveMove(id, options) {
-    const exportURL = `${exportBaseURL}id=${id}&format=tcx`;
-    fetch(exportURL, options).then(res => {
-        res.body.pipe(fs.createWriteStream(`${folder}move-${id}.tcx`));
-    });
 }
 
 module.exports = movescountExport;

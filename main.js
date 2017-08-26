@@ -5,11 +5,10 @@ const authenticate = require('./src/authenticate');
 
 let mainWindow;
 
-async function createWindow() {
+function createWindow() {
     mainWindow = new BrowserWindow({ width: 800, height: 600 });
 
-    const result = await authenticate(mainWindow);
-    movescountExport(result);
+    authenticate(mainWindow).then(movescountExport);
 
     mainWindow.on('closed', () => {
         mainWindow = null;

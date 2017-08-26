@@ -16,9 +16,12 @@
   "author": "Giggo1604",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.6.2"
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb-base": "^11.3.2",
+    "eslint-plugin-import": "^2.7.0"
   },
   "dependencies": {
+    "electron": "~1.6.2",    
     "node-fetch": "^1.7.2",
     "moment": "^2.18.1"
   }
