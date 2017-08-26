@@ -35,9 +35,9 @@ install:
 - npm install -g xvfb-maybe
 - yarn
 script:
-#- xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
-#- yarn run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
-- yarn run build
+- xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
+- yarn run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
+#- yarn run build
 branches:
   only:
   - master
