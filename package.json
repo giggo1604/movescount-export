@@ -1,6 +1,6 @@
 {
   "name": "movescount-export",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "giggo1604 <giggo1604@gmail.com>",
   "description": "A tool to export your movescount data",
   "license": "MIT",
