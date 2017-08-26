@@ -1,4 +1,4 @@
-const { session } = require('electron');
+const { session, BrowserWindow } = require('electron');
 
 const baseURL = 'http://www.movescount.com';
 const overviewURL = `${baseURL}/overview`;
@@ -12,7 +12,8 @@ function getCookie(url, name) {
     });
 }
 
-function authenticate(window) {
+function authenticate() {
+    const window = new BrowserWindow({ width: 600, height: 800 });
     const content = window.webContents;
     return new Promise((resolve) => {
         content.on('dom-ready', () => {
@@ -23,7 +24,10 @@ function authenticate(window) {
                     getCookie(baseURL),
                 ];
 
-                Promise.all(promises).then(resolve);
+                Promise.all(promises).then((result) => {
+                    resolve(result);
+                    window.close();
+                });
             }
         });
 
