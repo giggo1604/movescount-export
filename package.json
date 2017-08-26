@@ -1,0 +1,22 @@
+{
+  "name": "movescount-export",
+  "version": "0.1.0",
+  "description": "A tool to export your movescount data",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Movescount",
+    "suunto",
+    "export",
+    "download"
+  ],
+  "author": "Giggo1604",
+  "license": "MIT License",
+  "devDependencies": {
+    "electron": "~1.6.2",
+    "node-fetch": "^1.7.2"
+  }
+}
