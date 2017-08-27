@@ -33,7 +33,6 @@ export default {
     },
     methods: {
         log(event, moves) {
-            console.log(moves);
             this.moves = moves;
         },
     },
