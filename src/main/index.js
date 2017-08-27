@@ -31,7 +31,7 @@ function createWindow() {
         mainWindow = null;
     });
 
-    authenticate().then(movescountExport);
+    authenticate().then(result => movescountExport(mainWindow, result));
 }
 
 app.on('ready', createWindow);

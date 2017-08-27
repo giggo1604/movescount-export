@@ -12,7 +12,7 @@ function saveMove(id, options) {
     });
 }
 
-async function movescountExport([config, activityRecordsData, cookies]) {
+async function movescountExport(window, [config, activityRecordsData, cookies]) {
     const { UserId } = config;
     const { token, activityRecordsBaseUrl: baseUrl } = activityRecordsData;
 
@@ -24,6 +24,8 @@ async function movescountExport([config, activityRecordsData, cookies]) {
 
     const result = await fetch(url, { headers: { Authorization: token } });
     const { Moves: moves } = await result.json();
+
+    window.webContents.send('moves', moves);
 
     const cookiesString = cookies
         .map(cookie => `${cookie.name}=${cookie.value}`)
