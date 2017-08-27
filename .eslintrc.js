@@ -13,7 +13,8 @@ module.exports = {
     __static: true
   },
   plugins: [
-    'html'
+    'html',
+    'import'
   ],
   rules: {
     'indent': [2, 4],
