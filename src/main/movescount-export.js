@@ -12,6 +12,7 @@ let content;
 function updateStatus(id, status) {
     const move = moves.find(m => m.MoveId === id);
     move.status = status;
+    content.send('moves', moves);
 }
 
 function addProgress(moves) {
@@ -22,17 +23,14 @@ function addProgress(moves) {
     });
 }
 
-async function saveMove(id, options, cb) {
+const saveMove = (id, options) => async (cb) => {
     updateStatus(id, 'started');
-    content.send('moves', moves);
     const exportURL = `${exportBaseURL}id=${id}&format=tcx`;
     const result = await fetch(exportURL, options);
     await result.body.pipe(fs.createWriteStream(`${folder}move-${id}.tcx`));
     updateStatus(id, 'done');
-    content.send('moves', moves);
     cb();
-    return result;
-}
+};
 
 async function movescountExport(window, [config, activityRecordsData, cookies]) {
     content = window.webContents;
@@ -62,7 +60,7 @@ async function movescountExport(window, [config, activityRecordsData, cookies]) 
         },
     };
 
-    const downloadTasks = moves.map(m => async resolve => saveMove(m.MoveId, options, resolve));
+    const downloadTasks = moves.map(m => saveMove(m.MoveId, options));
 
     parallelLimit(downloadTasks, 3);
 }
