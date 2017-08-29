@@ -8,7 +8,12 @@ export default new Router({
         {
             path: '/',
             name: 'main',
-            component: require('@/components/Main'),
+            component: require('@/components/MovesList'),
+        },
+        {
+            path: '/auth',
+            nanme: 'auth',
+            component: require('@/components/Auth'),
         },
         {
             path: '*',
