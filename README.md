@@ -1,4 +1,4 @@
-# movescount-export
+# movescount-export [![Build Status](https://travis-ci.org/giggo1604/movescount-export.svg?branch=master)](https://travis-ci.org/giggo1604/movescount-export)
 A tool to export your movescount data
 
 This is an approach to export your moves data from the movescount site.
