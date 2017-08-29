@@ -6,7 +6,7 @@ dist: trusty
 language: c
 matrix:
   include:
-  - os: osx
+  #- os: osx
   - os: linux
     env: CC=clang CXX=clang++ npm_config_clang=1
     compiler: clang
@@ -33,7 +33,7 @@ install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash
 - source ~/.bashrc
 - npm install -g xvfb-maybe
-- yarn
+- npm install
 script:
 - xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
 - npm run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
