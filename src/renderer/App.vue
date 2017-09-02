@@ -2,18 +2,26 @@
     <div id="app">
         <nav class="navbar">
             <div class="navbar-brand">
-                <a class="navbar-item" href="https://github.com/giggo1604/movescount-export" v-on:click="openInBrowser">movescount-export</a>
+                <a class="navbar-item" href="https://github.com/giggo1604/movescount-export" @click="openInBrowser">movescount-export</a>
             </div>
-            <router-link class="navbar-item" to="/main">MovesList</router-link>
+            <router-link class="navbar-item" to="/movesList">MovesList</router-link>
             <router-link class="navbar-item" to="/auth">Auth</router-link>
+            <div class="navbar-end">
+                <span class="navbar-item">{{ username }}</span>
+            </div>
         </nav>
         <router-view></router-view>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'movescount-export',
+    computed: {
+        ...mapGetters(['username']),
+    },
     methods: {
         openInBrowser(e) {
             e.preventDefault();

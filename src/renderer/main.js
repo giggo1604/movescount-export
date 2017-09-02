@@ -9,6 +9,8 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 Vue.http = Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 
+['initMoves', 'initConfig'].forEach(store.dispatch);
+
 /* eslint-disable no-new */
 new Vue({
     components: { App },

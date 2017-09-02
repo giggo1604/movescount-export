@@ -7,7 +7,7 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'main',
+            name: 'movesList',
             component: require('@/components/MovesList'),
         },
         {

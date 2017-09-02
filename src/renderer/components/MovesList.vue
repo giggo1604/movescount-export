@@ -1,49 +1,23 @@
 <template>
     <main>
         <div class="config">
-            Found {{moves.length}} {{moves.length > 1 ? 'moves' : 'move'}} / Downloaded {{downlodedMoves}}
+            Found {{moves.length}} {{moves.length > 1 ? 'moves' : 'move'}} / Downloaded {{downloadedMoves}}
         </div>
         <ul>
-            <move v-for="move in moves" :key="move.MoveId" :move="move"></move>
+            <MovesListItem v-for="move in moves" :key="move.MoveId" :id="move.MoveId"></MovesListItem>
         </ul>
     </main>
 </template>
 
 <script>
-import MoveListItem from './Main/MoveListItem';
+import { mapGetters } from 'vuex';
+import MovesListItem from './MovesList/MovesListItem';
 
 export default {
-    name: 'main',
-    data() {
-        return {
-            downlodedMoves: 0,
-            moves: [{
-                MoveId: 173128890,
-                status: 'queued',
-            },
-            {
-                MoveId: 173128890,
-                status: 'started',
-            },
-            {
-                MoveId: 173128890,
-                status: 'done',
-            }],
-        };
-    },
-    created() {
-        this.$electron.ipcRenderer.on('moves', this.updateMoves);
-    },
+    name: 'moveList',
+    computed: mapGetters(['moves', 'downloadedMoves']),
     components: {
-        move: MoveListItem,
-    },
-    methods: {
-        updateMoves(event, moves) {
-            this.moves = moves;
-            this.downlodedMoves = moves
-                .filter(m => m.status === 'done')
-                .length;
-        },
+        MovesListItem,
     },
 };
 </script>
