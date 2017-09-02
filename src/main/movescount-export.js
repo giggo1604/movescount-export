@@ -1,68 +1,72 @@
 import fs from 'fs';
+import querystring from 'querystring';
 import fetch from 'node-fetch';
 import moment from 'moment';
+import urlJoin from 'url-join';
 import { parallelLimit } from 'async';
 
 const exportBaseURL = 'http://www.movescount.com/move/export?';
 const folder = './downloads/';
 
-let moves;
-let content;
-
-function updateStatus(id, status) {
-    const move = moves.find(m => m.MoveId === id);
-    move.status = status;
-    content.send('moves', moves);
-}
-
-function addProgress(moves) {
+function addStatus(moves) {
     return moves.map((move) => {
         move.status = 'queued';
-        move.progress = 0;
         return move;
     });
 }
 
-const saveMove = (id, options) => async (cb) => {
-    updateStatus(id, 'started');
+const createURL = (base, path, config) => urlJoin(base, path, `?${querystring.stringify(config)}`);
+
+const updateMoveFactory = ({ webContents }) => (move) => {
+    webContents.send('updateMove', move);
+};
+
+const saveMoveFactory = ({ updateMove }) => (move, options) => async (cb) => {
+    const { MoveId: id } = move;
+    move.status = 'started';
+    updateMove(move);
     const exportURL = `${exportBaseURL}id=${id}&format=tcx`;
     const result = await fetch(exportURL, options);
     await result.body.pipe(fs.createWriteStream(`${folder}move-${id}.tcx`));
-    updateStatus(id, 'done');
+    move.status = 'done';
+    updateMove(move);
     cb();
 };
 
-async function movescountExport(window, [config, activityRecordsData, cookies]) {
-    content = window.webContents;
-    const { UserId } = config;
-    const { token, activityRecordsBaseUrl: baseUrl } = activityRecordsData;
+const movescountExportFactory = ({ webContents }) => {
+    const updateMove = updateMoveFactory({ webContents });
+    const saveMove = saveMoveFactory({ updateMove });
 
-    const startDateQuery = `startDateString=${moment.utc().subtract(100, 'days').startOf('day').toISOString()}`;
-    const endDateQuery = `endDateString=${moment.utc().endOf('day').toISOString()}`;
-    const userIdQuery = `userId=${UserId}`;
+    return async (config, activityRecordsData, cookies) => {
+        const { UserId: userId } = config;
+        const { token, activityRecordsBaseUrl: baseURL } = activityRecordsData;
 
-    const url = `${baseUrl}/moves/getmoves/?${startDateQuery}&${endDateQuery}&${userIdQuery}`;
+        const url = createURL(baseURL, 'moves/getmoves', {
+            userId,
+            startDateString: moment.utc().subtract(100, 'days').startOf('day').toISOString(),
+            endDateString: moment.utc().endOf('day').toISOString(),
+        });
 
-    const result = await fetch(url, { headers: { Authorization: token } });
-    const resultJson = await result.json();
+        const result = await fetch(url, { headers: { Authorization: token } });
+        const json = await result.json();
+        const moves = json.Moves;
 
-    moves = resultJson.Moves;
+        webContents.send('initMoves', addStatus(moves));
 
-    window.webContents.send('moves', addProgress(moves));
+        const cookiesString = cookies
+            .map(cookie => `${cookie.name}=${cookie.value}`)
+            .join('; ');
 
-    const cookiesString = cookies
-        .map(cookie => `${cookie.name}=${cookie.value}`)
-        .join('; ');
+        const options = {
+            headers: {
+                Cookie: cookiesString,
+            },
+        };
 
-    const options = {
-        headers: {
-            Cookie: cookiesString,
-        },
+        const downloadTasks = moves.map(m => saveMove(m, options));
+
+        parallelLimit(downloadTasks, 3);
     };
+};
 
-    const downloadTasks = moves.map(m => saveMove(m.MoveId, options));
-
-    parallelLimit(downloadTasks, 3);
-}
-
-export default movescountExport;
+export default movescountExportFactory;

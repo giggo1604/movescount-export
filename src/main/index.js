@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron'; // eslint-disable-line
-import movescountExport from './movescount-export';
+import movescountExportFactory from './movescount-export';
 import authenticate from './authenticate';
 
 /**
@@ -15,14 +15,15 @@ const winURL = process.env.NODE_ENV === 'development'
     ? 'http://localhost:9080'
     : `file://${__dirname}/index.html`;
 
+
 function createWindow() {
     /**
      * Initial window options
      */
     mainWindow = new BrowserWindow({
-        height: 800,
+        width: 1920,
+        height: 1080,
         useContentSize: true,
-        width: 1024,
     });
 
     mainWindow.loadURL(winURL);
@@ -31,7 +32,11 @@ function createWindow() {
         mainWindow = null;
     });
 
-    authenticate().then(result => movescountExport(mainWindow, result));
+    const movescountExport = movescountExportFactory({ webContents: mainWindow.webContents });
+    authenticate().then((result) => {
+        mainWindow.webContents.send('config', result[0]);
+        movescountExport(...result);
+    });
 }
 
 app.on('ready', createWindow);
