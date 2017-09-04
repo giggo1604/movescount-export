@@ -2,7 +2,7 @@
     <div id="app">
         <nav class="navbar">
             <div class="navbar-brand">
-                <a class="navbar-item" href="https://github.com/giggo1604/movescount-export" @click="openInBrowser">movescount-export</a>
+                <a class="navbar-item" href="https://github.com/giggo1604/movescount-export" @click="openInBrowser">MovescountExport</a>
             </div>
             <router-link class="navbar-item" to="/movesList">MovesList</router-link>
             <router-link class="navbar-item" to="/auth">Auth</router-link>
@@ -33,8 +33,21 @@ export default {
 
 <style lang="scss">
 @import "~bulma/css/bulma.css";
+html, body {
+    height: 100%;
+    background-color: #ECEFF1;
+}
 
 .navbar {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    background-color: #ffd740;
+    font-weight: 600;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,0.14), 0 3px 3px -2px rgba(0,0,0,0.12), 0 1px 8px 0 rgba(0,0,0,0.2);
+    .navbar-item {
+        color: #ffffff;
+        &:hover {
+            color: #ffffff;
+            background-color: #ffab00;
+        }
+    }
 }
 </style>

@@ -2,7 +2,7 @@
     <main>
         <div class="config">
             Found {{moves.length}} {{moves.length > 1 ? 'moves' : 'move'}} / Downloaded {{downloadedMoves}}
-            <button class="button is-primary" @click="startDownload">Start</button>
+            <button class="button is-primary" :disabled="moves.length === 0" @click="startDownload">Start Download</button>
         </div>
         <ul>
             <MovesListItem v-for="move in moves" :key="move.MoveId" :id="move.MoveId"></MovesListItem>
@@ -20,7 +20,7 @@ export default {
     computed: mapGetters(['moves', 'downloadedMoves']),
     methods: {
         startDownload() {
-            ipcRenderer.send('startDownload');
+            ipcRenderer.send('confirm');
         },
     },
     components: {
@@ -31,8 +31,14 @@ export default {
 
 <style lang="scss">
 main {
-    .config {
-        margin: 16px;
+    div.config {
+        background-color: #fff;
+        padding: 32px 16px;
+        box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+        &> button {
+            margin-left: 30px;
+            vertical-align: baseline;
+        }
     }
     ul {
         list-style-type: none;
