@@ -1,5 +1,9 @@
 import { app, BrowserWindow } from 'electron'; // eslint-disable-line
-import movescountExportFactory from './movescount-export';
+import fs from 'fs';
+import fetch from 'node-fetch';
+import { parallelLimit } from 'async';
+import { fetchMovesFactory, saveMoveFactory, updateMoveFactory, startDownload } from './movescount-export';
+
 import authenticate from './authenticate';
 
 /**
@@ -15,6 +19,33 @@ const winURL = process.env.NODE_ENV === 'development'
     ? 'http://localhost:9080'
     : `file://${__dirname}/index.html`;
 
+
+function bootstrap(webContents) {
+    const fetchMoves = fetchMovesFactory({ fetch });
+    const updateMove = updateMoveFactory({ webContents });
+    const saveMove = saveMoveFactory({ updateMove, fs, fetch });
+
+    authenticate().then(async (result) => {
+        const [config, activityRecordsData, cookies] = result;
+        const { UserId: userId } = config;
+        const { token, activityRecordsBaseUrl: baseURL } = activityRecordsData;
+
+        webContents.send('config', config);
+
+        const moves = await fetchMoves(
+            baseURL,
+            userId,
+            token,
+        );
+
+        moves.forEach((move) => { move.status = 'queued'; });
+        webContents.send('initMoves', moves);
+
+        await startDownload();
+
+        parallelLimit(moves.map(m => saveMove(m, cookies)), 3);
+    });
+}
 
 function createWindow() {
     /**
@@ -32,11 +63,7 @@ function createWindow() {
         mainWindow = null;
     });
 
-    const movescountExport = movescountExportFactory({ webContents: mainWindow.webContents });
-    authenticate().then((result) => {
-        mainWindow.webContents.send('config', result[0]);
-        movescountExport(...result);
-    });
+    bootstrap(mainWindow.webContents);
 }
 
 app.on('ready', createWindow);
