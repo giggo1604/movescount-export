@@ -1,6 +1,6 @@
 <template>
     <li class="columns">
-        <span class="column is-narrow">{{ move.MoveId }}</span>
+        <span class="column is-narrow move-id">{{ move.MoveId }}</span>
         <span class="column">
             <span class="tag" :class="{
                     'is-light': move.status === 'queued',
@@ -16,12 +16,7 @@
 
 <script>
 export default {
-    props: ['id'],
-    computed: {
-        move() {
-            return this.$store.getters.getMoveById(this.id);
-        },
-    },
+    props: ['move'],
 };
 </script>
 
@@ -30,7 +25,11 @@ export default {
     margin: 0;
 }
 
-;
+.move-id {
+    width: 115px;
+    text-align: right;
+}
+
 li {
     margin: 0;
     border-bottom: 1px solid #e7e7e7;

@@ -35,6 +35,8 @@ export default {
 @import "~bulma/css/bulma.css";
 html, body {
     height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
     background-color: #ECEFF1;
 }
 
