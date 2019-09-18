@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "async": "^2.5.0",
-    "axios": "^0.16.1",
+    "axios": "^0.18.1",
     "bulma": "^0.5.1",
     "moment": "^2.18.1",
     "node-fetch": "^1.7.2",
